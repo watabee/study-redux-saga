@@ -4,10 +4,24 @@ import "./index.css";
 import "semantic-ui-css/semantic.min.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import createSagaMiddleware from "redux-saga";
+import { Provider } from "react-redux";
+import { createStore, applyMiddleware } from "redux";
+import { reducer, timerTask } from "./redux/modules/timer";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(reducer, applyMiddleware(sagaMiddleware));
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+
+  document.getElementById("root")
+);
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
+sagaMiddleware.run(timerTask);
